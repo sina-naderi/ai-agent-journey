@@ -55,7 +55,7 @@ async def main():
             fetch_post(session, 1),
             fetch_post(session, 2),
             fetch_user(session, 1),
-            fetch_post(session, 99999),  # تست خطا — باید gracefully fail بشه
+            fetch_post(session, 99999),  # Test error — should fail gracefully
         )
 
     print("\n=== Results ===")

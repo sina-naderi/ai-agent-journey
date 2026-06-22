@@ -2,7 +2,7 @@ import asyncio
 import aiohttp
 import time
 
-# ─── روش sync (کند) ───────────────────────
+# ─── sync method (slow) ───────────────────────
 import requests
 
 def fetch_sync(post_id):
@@ -11,11 +11,11 @@ def fetch_sync(post_id):
 
 def run_sync():
     start = time.time()
-    results = [fetch_sync(i) for i in range(1, 4)]   # یکی‌یکی صبر می‌کنه
+    results = [fetch_sync(i) for i in range(1, 4)]   # waits one by one
     print(f"Sync: {time.time() - start:.2f}s")
     return results
 
-# ─── روش async (سریع) ───────────────────────
+# ─── async method (fast) ───────────────────────
 async def fetch_async(session, post_id):
     url = f"https://jsonplaceholder.typicode.com/posts/{post_id}"
     async with session.get(url) as response:
@@ -26,10 +26,10 @@ async def run_async():
     start = time.time()
     async with aiohttp.ClientSession() as session:
         tasks = [fetch_async(session, i) for i in range(1, 4)]
-        results = await asyncio.gather(*tasks)    # همه با هم اجرا می‌شن
+        results = await asyncio.gather(*tasks)    # all run concurrently
     print(f"Async: {time.time() - start:.2f}s")
     return results
 
-# ─── اجرا ───────────────────────
+# ─── execution ───────────────────────
 run_sync()
 asyncio.run(run_async())

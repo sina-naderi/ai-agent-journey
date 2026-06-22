@@ -2,7 +2,7 @@ import requests
 import logging
 from dotenv import load_dotenv
 
-# تنظیم logging
+# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s — %(levelname)s — %(message)s'
@@ -13,15 +13,15 @@ load_dotenv()
 
 def fetch_post(post_id: int) -> dict | None:
     """
-    یک post را از API می‌گیرد.
+    Fetch a post from the API.
     Returns None on failure.
     """
     url = f"https://jsonplaceholder.typicode.com/posts/{post_id}"
 
     try:
         logger.info(f"Fetching post {post_id}...")
-        response = requests.get(url, timeout=10)   # timeout مهم است!
-        response.raise_for_status()                # اگر 4xx/5xx بود، exception بیندازد
+        response = requests.get(url, timeout=10)   # timeout is important!
+        response.raise_for_status()                # raise exception if 4xx/5xx
 
         data = response.json()
         logger.info(f"Successfully fetched: {data['title'][:40]}...")
@@ -44,10 +44,10 @@ def fetch_post(post_id: int) -> dict | None:
         return None
 
 
-# تست با ID درست
+# Test with a valid ID
 post = fetch_post(1)
 if post:
     print(f"Title: {post['title']}")
 
-# تست با ID اشتباه — باید لاگ خطا ببینی، نه crash
+# Test with an invalid ID — should see error log, not a crash
 fetch_post(99999)
