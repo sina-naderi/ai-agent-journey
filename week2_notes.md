@@ -9,3 +9,5 @@
 - git branch → see all branches
 - git checkout -b name → create and switch to new branch
 - git log --oneline --graph --all → see visual history
+
+- Work in progress...
