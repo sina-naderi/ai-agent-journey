@@ -41,3 +41,4 @@ MY_NAME=YourName
 - [ ] Week 2 — Professional Git & GitHub
 - [ ] Week 3 — API Fundamentals & Authentication
 - [ ] Week 4 — LLM APIs & Tool Use
+.
