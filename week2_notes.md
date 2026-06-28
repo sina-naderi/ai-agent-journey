@@ -1,4 +1,4 @@
-# Week 2 Notes
+# Week 2 Notes — Professional Git
 
 ## Git Branching
 - Never work directly on main
