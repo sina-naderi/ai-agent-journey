@@ -36,9 +36,7 @@ MY_NAME=YourName
 ```
 
 ## 📈 Progress
-
 - [x] Week 1 — Python Foundations (async, APIs, error handling)
-- [ ] Week 2 — Professional Git & GitHub
+- [x] Week 2 — Professional Git (branching, PR, conflict resolution)
 - [ ] Week 3 — API Fundamentals & Authentication
 - [ ] Week 4 — LLM APIs & Tool Use
-.
