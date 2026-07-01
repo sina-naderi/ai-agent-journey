@@ -27,7 +27,6 @@ def call_llm(message: str) -> str:
     response = client.chat.completions.create(
         model="gpt-5-nano",  # Google's Gemma model hosted on Gap
         messages=[{"role": "user", "content": message}],
-        max_tokens=100,          # Limit response length (same as original)
         temperature=0.7          # Balanced creativity vs determinism
     )
     
@@ -53,7 +52,6 @@ client = OpenAI(
 # Make a simple request to inspect the full response object
 response = client.chat.completions.create(
     model="gpt-5-nano",
-    max_tokens=50,
     messages=[{"role": "user", "content": "Hi!"}]
 )
 
