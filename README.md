@@ -38,5 +38,5 @@ MY_NAME=YourName
 ## 📈 Progress
 - [x] Week 1 — Python Foundations (async, APIs, error handling)
 - [x] Week 2 — Professional Git (branching, PR, conflict resolution)
-- [ ] Week 3 — API Fundamentals & Authentication
-- [ ] Week 4 — LLM APIs & Tool Use
+- [x] Week 3 — API Auth, LLM Integration, FastAPI Webhook
+- [ ] Week 4 — LLM Tool Use & First AI Agent
