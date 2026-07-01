@@ -35,7 +35,8 @@ def call_llm_with_retry(message: str, max_retries: int = 3) -> str | None:
             response = client.chat.completions.create(
                 model="gpt-5-nano",
                 messages=[{"role": "user", "content": message}],
-                temperature=0.7
+                temperature=0.7,
+                max_tokens=500
             )
 
             
