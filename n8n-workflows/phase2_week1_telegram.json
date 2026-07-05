@@ -1,0 +1,91 @@
+{
+  "name": "phase2_week1_telegram",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        -96
+      ],
+      "id": "300764b9-ce04-4d3b-b7da-3c2586e09bd0",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "chatId": "31428711",
+        "text": "=📌 New Post Alert!  \nTitle: {{ $json.title }} \nBody: {{ $json.body }}  \nSent at: {{ $now.toISO() }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -48,
+        -96
+      ],
+      "id": "e059af1e-d728-4076-ae37-80a15c5ef6eb",
+      "name": "Send a text message",
+      "webhookId": "efc1844d-23c8-4cb2-aafd-31acccdf65df",
+      "credentials": {
+        "telegramApi": {
+          "id": "K9TPUdpEJRnxM0HO",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/posts/1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -256,
+        -96
+      ],
+      "id": "5fdd5ffe-0982-4610-919f-b5bd8da51ef4",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "3a3ee2bc-e755-4762-803b-1246cdf11a01",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ac6b222eec7e651aef31dea4727402db08f155cc6e298fe740aa58f57b862de0"
+  },
+  "nodeGroups": [],
+  "id": "40EAUjSK1ZKdwgPn",
+  "tags": []
+}
