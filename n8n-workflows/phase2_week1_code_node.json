@@ -1,0 +1,85 @@
+{
+  "name": "phase2_week1_code_node",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -368,
+        -16
+      ],
+      "id": "320ac02d-3262-444f-88e1-b5cb01145272",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/posts?_limit=5",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -160,
+        -16
+      ],
+      "id": "97a5ed08-223d-45c9-bfb7-b9e2f8897988",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all input items\nconst items = $input.all();\n\n// Process each post\nconst results = items.map(item => {\n  const post = item.json;\n  \n  return {\n    json: {\n      id: post.id,\n      title: post.title.toUpperCase(),           // title رو بزرگ کن\n      word_count: post.body.split(' ').length,    // تعداد کلمات body\n      is_long: post.body.length > 200,            // آیا پست طولانیه؟\n      processed_at: new Date().toISOString()       // زمان پردازش\n    }\n  };\n});\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        48,
+        -16
+      ],
+      "id": "b859126a-50d4-48e3-8486-5d20f0d7dd82",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "d970025f-af1e-46a4-9a2d-baee891daf66",
+  "meta": {
+    "instanceId": "0e23967e93a99c66c8df5e252a34db1277edbcd33a64ae7d3ad52c6a8a800d4f"
+  },
+  "id": "81MOzPeccjtoxCiN",
+  "tags": []
+}
