@@ -1,0 +1,94 @@
+{
+  "name": "phase2_week1_telegram_bot",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "telegram-webhook",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -224,
+        -32
+      ],
+      "id": "aca3058c-a86b-43d5-bbb3-1d9351cbf6c7",
+      "name": "Webhook",
+      "webhookId": "e4a48496-e84e-4964-99fd-b2e347f8ce50"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract message data from Telegram webhook\nconst body = $input.first().json.body;\nconst message = body.message;\n\nconst chatId = message.chat.id;\nconst text = message.text || \"\";\nconst firstName = message.from.first_name || \"Friend\";\n\n// Simple response logic\nlet response;\nif (text.toLowerCase().includes(\"hello\") || text.toLowerCase().includes(\"hi\")) {\n    response = `Hello ${firstName}! 👋 I'm your AI assistant bot.`;\n} else if (text.toLowerCase().includes(\"time\")) {\n    response = `Current time: ${new Date().toLocaleString()}`;\n} else if (text.toLowerCase().includes(\"help\")) {\n    response = `Available commands:\\n- hello: greeting\\n- time: current time\\n- help: show this menu`;\n} else {\n    response = `You said: \"${text}\"\\nI'm still learning! Try: hello, time, or help`;\n}\n\nreturn [{\n    json: {\n        chat_id: chatId,\n        text: response\n    }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        -32
+      ],
+      "id": "fada8c8f-e12d-415f-aa28-a8f73d67f9c7",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ $json.text }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        192,
+        -32
+      ],
+      "id": "46ddade7-003f-422f-a8e4-c7873bb6b8ec",
+      "name": "Send a text message",
+      "webhookId": "3419a44e-b5c0-4aef-bb10-b383f080e167",
+      "credentials": {
+        "telegramApi": {
+          "id": "K9TPUdpEJRnxM0HO",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "4af82c3c-80d2-4d03-9081-9d4c8f979c9e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ac6b222eec7e651aef31dea4727402db08f155cc6e298fe740aa58f57b862de0"
+  },
+  "nodeGroups": [],
+  "id": "eREveJPBsLtoGgtf",
+  "tags": []
+}
