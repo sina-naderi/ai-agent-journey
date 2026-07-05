@@ -1,10 +1,21 @@
 # AI Agent Journey 🤖
 
 Learning to build AI Agents and automation tools — day by day.
+Building toward a career as an AI Engineer in Europe.
 
 ## 🛠 Tech Stack
 
-`Python` `asyncio` `aiohttp` `requests` `python-dotenv`
+`Python` `asyncio` `aiohttp` `requests` `python-dotenv` `FastAPI` `uvicorn` `OpenAI SDK` `GapGPT API`
+
+## 📂 Structure
+
+| Folder | Contents |
+|--------|----------|
+| `week1/` | Python foundations, async, APIs, error handling |
+| `week2/` | Professional Git workflow notes |
+| `week3/` | API auth, LLM client, FastAPI webhook |
+| `week4/` | Tool use, memory, AI assistant CLI |
+| `postman/` | API test collections |
 
 ## 📁 Projects
 
@@ -12,11 +23,38 @@ Learning to build AI Agents and automation tools — day by day.
 
 | File | Description |
 |------|-------------|
-| `day2_api_basics.py` | Basic GET/POST requests with JSON parsing |
-| `day3_env_secrets.py` | Secure API key management with .env |
-| `day4_error_handling.py` | Error handling and logging for API calls |
-| `day5_async_basics.py` | Sync vs Async performance comparison |
-| `week1_project.py` | Async multi-API fetcher with full error handling |
+| `week1/day2_api_basics.py` | Basic GET/POST requests with JSON parsing |
+| `week1/day3_env_secrets.py` | Secure API key management with .env |
+| `week1/day4_error_handling.py` | Error handling and logging for API calls |
+| `week1/day5_async_basics.py` | Sync vs Async performance comparison |
+| `week1/week1_project.py` | Async multi-API fetcher with full error handling |
+
+### Week 2 — Professional Git
+
+| File | Description |
+|------|-------------|
+| `week2/week2_notes.md` | Git branching, stash, conflict resolution notes |
+
+### Week 3 — API Auth & LLM Integration
+
+| File | Description |
+|------|-------------|
+| `week3/week3_day1_http.py` | HTTP headers, query params, and pagination |
+| `week3/week3_day2_auth.py` | Authentication types and LLM API integration (GapGPT) |
+| `week3/week3_day3_retry.py` | Rate limit handling with retry and exponential backoff |
+| `week3/week3_day4_webhook.py` | FastAPI webhook endpoint with AI response handler |
+| `week3/week3_project.py` | Multi-provider LLM client with fallback and retry logic |
+
+### Week 4 — LLM Tool Use & First AI Agent
+
+| File | Description |
+|------|-------------|
+| `week4/week4_day1_tools.py` | LLM tool use with ReAct agent loop |
+| `week4/week4_day2_multi_tool.py` | Multi-tool agent with system prompt and knowledge base |
+| `week4/week4_day3_memory.py` | Agent with conversation memory |
+| `week4/week4_day4_prompts.py` | Prompt engineering examples with structured output |
+| `week4/week4_day5_error_handling.py` | Safe agent with error handling and max iterations guard |
+| `week4/week4_project.py` | Complete AI assistant CLI with tools, memory, and fallback |
 
 ## 🚀 Setup
 
@@ -31,12 +69,28 @@ pip install -r requirements.txt
 Create a `.env` file in the root directory:
 
 ```
-ANTHROPIC_API_KEY=your_key_here
+GAP_API_KEY=your_gapgpt_key_here
 MY_NAME=YourName
 ```
 
+## 🤖 Run the AI Assistant
+
+```bash
+python week4/week4_project.py
+```
+
+Available commands inside the assistant:
+- Type any message to chat
+- `clear` — reset conversation memory
+- `quit` — exit
+
 ## 📈 Progress
+
 - [x] Week 1 — Python Foundations (async, APIs, error handling)
 - [x] Week 2 — Professional Git (branching, PR, conflict resolution)
 - [x] Week 3 — API Auth, LLM Integration, FastAPI Webhook
-- [ ] Week 4 — LLM Tool Use & First AI Agent
+- [x] Week 4 — LLM Tool Use, Memory, First AI Agent
+- [ ] Phase 2 — n8n Advanced, RAG, Vector Databases
+- [ ] Phase 3 — Portfolio Projects & Deployment
+- [ ] Phase 4 — Career Stack & First Applications
+- [ ] Phase 5 — Interview Prep & System Design
