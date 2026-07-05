@@ -103,10 +103,6 @@ def extract_json(text: str) -> str:
     text = re.sub(r'```\s*', '', text)
     return text.strip()
 
-# در Test 3:
-result = ask(STRUCTURED_PROMPT, bio_text)
-print(result)
-
 try:
     clean = extract_json(result)
     data = json.loads(clean)
@@ -116,11 +112,3 @@ try:
 except json.JSONDecodeError as e:
     print(f"\nStill couldn't parse: {e}")
     print(f"Raw output: {result}")
-    
-try:
-    data = json.loads(result)
-    print(f"\nParsed successfully!")
-    print(f"Name: {data.get('name')}")
-    print(f"Goal: {data.get('goal')}")
-except json.JSONDecodeError:
-    print("\nCouldn't parse as JSON — prompt needs adjustment")
