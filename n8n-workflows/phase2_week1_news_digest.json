@@ -56,7 +56,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer sk-Rjb9Wynj4KfQbIMYmQfYb0Ia8K8wc3AW79x9NSwGRSI8KSAU"
+              "value": "Bearer YOUR_TOKEN"
             }
           ]
         },
@@ -174,7 +174,7 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "f61c4751-1df8-469f-a957-911ccc2400e4",
+  "versionId": "8289c83a-cf88-4084-a8aa-36f6a7c033a8",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "ac6b222eec7e651aef31dea4727402db08f155cc6e298fe740aa58f57b862de0"
