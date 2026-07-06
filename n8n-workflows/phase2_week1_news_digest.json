@@ -1,0 +1,185 @@
+{
+  "name": "phase2_week1_news_digest",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -416,
+        -48
+      ],
+      "id": "03e6095b-21ed-4a64-b532-c2bb314a0839",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/posts?_limit=3",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -256,
+        -48
+      ],
+      "id": "5c42bda0-821a-4d3b-a2a6-5d5a3231f8b1",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all posts\nconst items = $input.all();\n\n// Format posts as a news digest\nconst newsText = items.map((item, index) => {\n    const post = item.json;\n    return `${index + 1}. ${post.title}\\n${post.body.substring(0, 100)}...`;\n}).join('\\n\\n');\n\nreturn [{\n    json: {\n        news_text: newsText,\n        count: items.length,\n        date: new Date().toISOString().split('T')[0]\n    }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        -48
+      ],
+      "id": "6e83f585-8892-44e1-8a57-f974862280c0",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.gapgpt.app/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer sk-Rjb9Wynj4KfQbIMYmQfYb0Ia8K8wc3AW79x9NSwGRSI8KSAU"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"model\": \"gpt-5-nano\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Summarize these news in 3 bullet points in a friendly tone:\\n\\n {{ $json.news_text }} \"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        128,
+        -48
+      ],
+      "id": "79b73fcb-a933-47a3-9d84-4da89b644734",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nconst summary = response.choices[0].message.content;\nconst date = $node['Code in JavaScript'].json.date;\n\nreturn [{\n    json: {\n        message: `📰 Daily News Digest - ${date}\\n\\n${summary}`\n    }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        -48
+      ],
+      "id": "910997bc-3a45-440a-8eae-d7346504b5ba",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "chatId": "31428711",
+        "text": "={{ $json.message }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        -48
+      ],
+      "id": "5da1b5e3-d628-4570-bb97-3748064ca1b7",
+      "name": "Send a text message",
+      "webhookId": "507f1bb3-dac8-46b7-894f-f04fd243d446",
+      "credentials": {
+        "telegramApi": {
+          "id": "K9TPUdpEJRnxM0HO",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "f61c4751-1df8-469f-a957-911ccc2400e4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ac6b222eec7e651aef31dea4727402db08f155cc6e298fe740aa58f57b862de0"
+  },
+  "nodeGroups": [],
+  "id": "RHj7H5fUJQR5lhbz",
+  "tags": []
+}
