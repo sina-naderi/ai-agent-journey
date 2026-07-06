@@ -5,7 +5,7 @@ Building toward a career as an AI Engineer in Europe.
 
 ## 🛠 Tech Stack
 
-`Python` `asyncio` `aiohttp` `requests` `python-dotenv` `FastAPI` `uvicorn` `OpenAI SDK` `GapGPT API`
+`Python` `asyncio` `aiohttp` `requests` `python-dotenv` `FastAPI` `uvicorn` `OpenAI SDK` `GapGPT API` `n8n` `Telegram Bot API`
 
 ## 📂 Structure
 
@@ -15,7 +15,7 @@ Building toward a career as an AI Engineer in Europe.
 | `week2/` | Professional Git workflow notes |
 | `week3/` | API auth, LLM client, FastAPI webhook |
 | `week4/` | Tool use, memory, AI assistant CLI |
-| `postman/` | API test collections |
+| `n8n-workflows/` | n8n automation workflows |
 
 ## 📁 Projects
 
@@ -56,6 +56,17 @@ Building toward a career as an AI Engineer in Europe.
 | `week4/week4_day5_error_handling.py` | Safe agent with error handling and max iterations guard |
 | `week4/week4_project.py` | Complete AI assistant CLI with tools, memory, and fallback |
 
+### Phase 2 Week 1 — n8n Fundamentals
+
+| Workflow | Description |
+|----------|-------------|
+| `n8n-workflows/phase2_week1_first_workflow.json` | First n8n workflow — HTTP Request basics |
+| `n8n-workflows/phase2_week1_error_handling.json` | Error handling with On Error and IF node |
+| `n8n-workflows/phase2_week1_code_node.json` | Data processing with JavaScript Code node |
+| `n8n-workflows/phase2_week1_telegram.json` | Telegram integration — send API posts |
+| `n8n-workflows/phase2_week1_telegram_bot.json` | Telegram bot — receive and reply to messages |
+| `n8n-workflows/phase2_week1_news_digest.json` | Daily news digest with GapGPT summarization |
+
 ## 🚀 Setup
 
 ```bash
@@ -90,7 +101,10 @@ Available commands inside the assistant:
 - [x] Week 2 — Professional Git (branching, PR, conflict resolution)
 - [x] Week 3 — API Auth, LLM Integration, FastAPI Webhook
 - [x] Week 4 — LLM Tool Use, Memory, First AI Agent
-- [ ] Phase 2 — n8n Advanced, RAG, Vector Databases
+- [x] Phase 2 Week 1 — n8n Fundamentals (workflows, Telegram, GapGPT)
+- [ ] Phase 2 Week 2 — RAG & Vector Databases
+- [ ] Phase 2 Week 3 — LangChain & LangGraph
+- [ ] Phase 2 Week 4 — PostgreSQL, FastAPI & Capstone Agent
 - [ ] Phase 3 — Portfolio Projects & Deployment
 - [ ] Phase 4 — Career Stack & First Applications
 - [ ] Phase 5 — Interview Prep & System Design
