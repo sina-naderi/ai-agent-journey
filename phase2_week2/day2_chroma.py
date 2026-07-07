@@ -17,10 +17,10 @@ model = SentenceTransformer("all-MiniLM-L6-v2")
 logger.info("Model loaded!")
 
 # ── Setup Chroma ─────────────────────────────────────────────────────────
-# PersistentClient = داده‌ها روی دیسک ذخیره می‌شن (بعد از بستن برنامه هم هستن)
+# PersistentClient = data is stored on disk (persists after closing the program)
 client = chromadb.PersistentClient(path="./chroma_db")
 
-# ساخت یه collection (مثل یه جدول در دیتابیس)
+# Create a collection (like a table in a database)
 collection = client.get_or_create_collection(
     name="company_docs",
     metadata={"description": "Company FAQ and policies"}
@@ -39,11 +39,11 @@ documents = [
     "Bulk orders of 10+ items get a 15% discount automatically",
 ]
 
-# Embedding ها رو بساز
+# Build the embeddings
 logger.info("Creating embeddings and storing in Chroma...")
 embeddings = model.encode(documents).tolist()
 
-# توی Chroma ذخیره کن
+# Store in Chroma
 collection.upsert(
     documents=documents,
     embeddings=embeddings,
