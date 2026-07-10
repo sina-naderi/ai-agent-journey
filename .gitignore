@@ -1,5 +1,6 @@
 venv/
 .env
 phase2_week2/chroma_db/
+phase2_week2/chroma_db_v2/
 __pycache__/
 *.pyc
