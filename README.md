@@ -5,7 +5,7 @@ Building toward a career as an AI Engineer in Europe.
 
 ## 🛠 Tech Stack
 
-`Python` `asyncio` `aiohttp` `requests` `python-dotenv` `FastAPI` `uvicorn` `OpenAI SDK` `GapGPT API` `n8n` `Telegram Bot API`
+`Python` `asyncio` `aiohttp` `requests` `python-dotenv` `FastAPI` `uvicorn` `OpenAI SDK` `GapGPT API` `n8n` `Telegram Bot API` `ChromaDB` `sentence-transformers`
 
 ## 📂 Structure
 
@@ -15,12 +15,13 @@ Building toward a career as an AI Engineer in Europe.
 | `week2/` | Professional Git workflow notes |
 | `week3/` | API auth, LLM client, FastAPI webhook |
 | `week4/` | Tool use, memory, AI assistant CLI |
-| `n8n-workflows/` | n8n automation workflows |
+| `phase2_week1/` | n8n workflows and automation |
+| `phase2_week2/` | RAG pipeline and vector database |
+| `n8n-workflows/` | Exported n8n workflow JSON files |
 
 ## 📁 Projects
 
 ### Week 1 — Python Foundations
-
 | File | Description |
 |------|-------------|
 | `week1/day2_api_basics.py` | Basic GET/POST requests with JSON parsing |
@@ -30,13 +31,11 @@ Building toward a career as an AI Engineer in Europe.
 | `week1/week1_project.py` | Async multi-API fetcher with full error handling |
 
 ### Week 2 — Professional Git
-
 | File | Description |
 |------|-------------|
 | `week2/week2_notes.md` | Git branching, stash, conflict resolution notes |
 
 ### Week 3 — API Auth & LLM Integration
-
 | File | Description |
 |------|-------------|
 | `week3/week3_day1_http.py` | HTTP headers, query params, and pagination |
@@ -46,7 +45,6 @@ Building toward a career as an AI Engineer in Europe.
 | `week3/week3_project.py` | Multi-provider LLM client with fallback and retry logic |
 
 ### Week 4 — LLM Tool Use & First AI Agent
-
 | File | Description |
 |------|-------------|
 | `week4/week4_day1_tools.py` | LLM tool use with ReAct agent loop |
@@ -57,7 +55,6 @@ Building toward a career as an AI Engineer in Europe.
 | `week4/week4_project.py` | Complete AI assistant CLI with tools, memory, and fallback |
 
 ### Phase 2 Week 1 — n8n Fundamentals
-
 | Workflow | Description |
 |----------|-------------|
 | `n8n-workflows/phase2_week1_first_workflow.json` | First n8n workflow — HTTP Request basics |
@@ -66,6 +63,16 @@ Building toward a career as an AI Engineer in Europe.
 | `n8n-workflows/phase2_week1_telegram.json` | Telegram integration — send API posts |
 | `n8n-workflows/phase2_week1_telegram_bot.json` | Telegram bot — receive and reply to messages |
 | `n8n-workflows/phase2_week1_news_digest.json` | Daily news digest with GapGPT summarization |
+
+### Phase 2 Week 2 — RAG & Vector Database
+| File | Description |
+|------|-------------|
+| `phase2_week2/day1_embeddings.py` | Text embeddings and semantic search with cosine similarity |
+| `phase2_week2/day2_chroma.py` | Persistent vector storage with ChromaDB |
+| `phase2_week2/day3_rag_pipeline.py` | Complete RAG pipeline: embed → search → LLM answer |
+| `phase2_week2/day4_chunking.py` | Document chunking strategies (paragraph vs size-based) |
+| `phase2_week2/day5_advanced_rag.py` | Advanced RAG with metadata filtering and auto-category detection |
+| `phase2_week2/day6_project_qa_bot.py` | Complete customer support Q&A bot with RAG and memory |
 
 ## 🚀 Setup
 
@@ -90,10 +97,11 @@ MY_NAME=YourName
 python week4/week4_project.py
 ```
 
-Available commands inside the assistant:
-- Type any message to chat
-- `clear` — reset conversation memory
-- `quit` — exit
+## 🧠 Run the Q&A Bot (RAG)
+
+```bash
+python phase2_week2/day6_project_qa_bot.py
+```
 
 ## 📈 Progress
 
@@ -102,7 +110,7 @@ Available commands inside the assistant:
 - [x] Week 3 — API Auth, LLM Integration, FastAPI Webhook
 - [x] Week 4 — LLM Tool Use, Memory, First AI Agent
 - [x] Phase 2 Week 1 — n8n Fundamentals (workflows, Telegram, GapGPT)
-- [ ] Phase 2 Week 2 — RAG & Vector Databases
+- [x] Phase 2 Week 2 — RAG & Vector Database (ChromaDB, embeddings, Q&A bot)
 - [ ] Phase 2 Week 3 — LangChain & LangGraph
 - [ ] Phase 2 Week 4 — PostgreSQL, FastAPI & Capstone Agent
 - [ ] Phase 3 — Portfolio Projects & Deployment

@@ -2,5 +2,7 @@ venv/
 .env
 phase2_week2/chroma_db/
 phase2_week2/chroma_db_v2/
+phase2_week2/chroma_db_v3/
+phase2_week2/chroma_db_qa_bot/
 __pycache__/
 *.pyc
