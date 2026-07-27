@@ -5,7 +5,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_core.tools import tool
-from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage, ToolMessage
 from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime
 from sqlalchemy.orm import DeclarativeBase, Session
 from sqlalchemy.sql import func
@@ -17,7 +17,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 load_dotenv()
 
-# ── Database setup ────────────────────────────────────────────────────────
+# ── Database ──────────────────────────────────────────────────────────────
 DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/agent_db"
 engine = create_engine(DATABASE_URL, echo=False)
 
@@ -30,9 +30,9 @@ class Message(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     session_id = Column(String(100), nullable=False, index=True)
-    role = Column(String(20), nullable=False)  # user, assistant, system, tool
+    role = Column(String(20), nullable=False)
     content = Column(Text, nullable=False)
-    tool_name = Column(String(100))  # filled only for tool messages
+    tool_name = Column(String(100))
     created_at = Column(DateTime, server_default=func.now())
 
 Base.metadata.create_all(engine)
@@ -40,77 +40,63 @@ logger.info("Agent messages table ready")
 
 # ── PostgreSQL Memory Manager ─────────────────────────────────────────────
 class PostgresMemory:
-    """
-    Manages conversation history stored in PostgreSQL.
-    Replaces LangGraph's MemorySaver with persistent storage.
-    """
+    """Manages conversation history stored in PostgreSQL."""
 
     def __init__(self, engine, session_id: str):
         self.engine = engine
         self.session_id = session_id
 
     def add_user_message(self, content: str):
-        """Save a user message to the database."""
-        self._save_message("user", content)
+        self._save("user", content)
 
     def add_ai_message(self, content: str):
-        """Save an AI response to the database."""
-        self._save_message("assistant", content)
+        self._save("assistant", content)
 
     def add_tool_result(self, tool_name: str, content: str):
-        """Save a tool result to the database."""
-        self._save_message("tool", content, tool_name=tool_name)
+        self._save("tool", content, tool_name=tool_name)
 
-    def _save_message(self, role: str, content: str, tool_name: str = None):
-        """Internal method to save any message type."""
+    def _save(self, role: str, content: str, tool_name: str = None):
         with Session(self.engine) as session:
-            msg = Message(
+            session.add(Message(
                 session_id=self.session_id,
                 role=role,
                 content=content,
                 tool_name=tool_name
-            )
-            session.add(msg)
+            ))
             session.commit()
 
     def get_messages(self, limit: int = 20) -> list:
-        """
-        Retrieve recent messages and convert to LangChain format.
-        This is what gets sent to the LLM on every turn.
-        """
+        """Get recent messages as LangChain message objects."""
         with Session(self.engine) as session:
-            messages = session.query(Message)\
+            rows = session.query(Message)\
                 .filter(Message.session_id == self.session_id)\
                 .order_by(Message.created_at.asc())\
-                .limit(limit)\
-                .all()
+                .limit(limit).all()
 
-        # Convert database rows to LangChain message objects
         result = []
-        for msg in messages:
+        for msg in rows:
             if msg.role == "user":
                 result.append(HumanMessage(content=msg.content))
             elif msg.role == "assistant":
                 result.append(AIMessage(content=msg.content))
+            # tool messages are NOT included here
+            # they're only used in the same turn they're created
         return result
 
     def clear(self):
-        """Delete all messages for this session."""
         with Session(self.engine) as session:
             session.query(Message)\
                 .filter(Message.session_id == self.session_id)\
                 .delete()
             session.commit()
-        logger.info(f"Cleared memory for session: {self.session_id}")
 
     def count(self) -> int:
-        """Count total messages in this session."""
         with Session(self.engine) as session:
             return session.query(Message)\
                 .filter(Message.session_id == self.session_id)\
                 .count()
 
-# ── LLM and tools setup ───────────────────────────────────────────────────
+# ── LLM and tools ─────────────────────────────────────────────────────────
 llm = ChatOpenAI(
     base_url="https://api.gapgpt.app/v1",
     api_key=os.getenv("GAP_API_KEY"),
@@ -145,47 +131,70 @@ def calculate(expression: str) -> str:
 tools = [get_current_time, calculate]
 tools_dict = {t.name: t for t in tools}
 
-# ── Agent with PostgreSQL memory ──────────────────────────────────────────
+# ── Agent با PostgreSQL memory ────────────────────────────────────────────
 def chat_with_postgres_memory(message: str, session_id: str) -> str:
     """
-    Chat function that uses PostgreSQL for persistent memory.
-    Unlike MemorySaver, conversations survive server restarts.
+    Chat with agent using PostgreSQL for persistent memory.
+
+    KEY CHANGE from original:
+    When tool calls happen, we pass tool results directly in the same
+    request instead of reloading from DB. This is required by the API —
+    an assistant message with tool_calls MUST be immediately followed
+    by tool messages with matching tool_call_ids.
     """
     memory = PostgresMemory(engine, session_id)
 
-    # Save user message to database
+    # Save user message
     memory.add_user_message(message)
 
-    # Build message list: system prompt + history + new message
+    # Build messages: system + history from DB
     system = SystemMessage(content=SYSTEM_PROMPT)
     history = memory.get_messages()
     messages = [system] + history
 
-    # Call LLM with tools
+    # First LLM call
     response = llm.bind_tools(tools).invoke(messages)
 
-    # Handle tool calls if any
     if response.tool_calls:
+        # ── CHANGED: build tool results in memory, not from DB ──────────
+        # The API requires this exact sequence:
+        # [...messages, assistant_with_tool_calls, tool_result_1, tool_result_2]
+        tool_messages = []
+
         for tool_call in response.tool_calls:
-            tool_name = tool_call["name"]
-            tool_args = tool_call["args"]
+            try:
+                if tool_call["name"] in tools_dict:
+                    result = tools_dict[tool_call["name"]].invoke(tool_call["args"])
+                    logger.info(f"Tool {tool_call['name']} → {result}")
+                else:
+                    result = f"Unknown tool: {tool_call['name']}"
+            except Exception as e:
+                result = f"Tool error: {e}"
+                logger.error(f"Tool {tool_call['name']} failed: {e}")
 
-            if tool_name in tools_dict:
-                result = tools_dict[tool_name].invoke(tool_args)
-                memory.add_tool_result(tool_name, str(result))
-                logger.info(f"Tool {tool_name} → {result}")
+            # Save to DB for logging
+            memory.add_tool_result(tool_call["name"], str(result))
 
-        # Call LLM again with tool results for final answer
-        updated_history = memory.get_messages()
-        final_response = llm.invoke([system] + updated_history + [response])
+            # Build ToolMessage for the API
+            tool_messages.append(ToolMessage(
+                content=str(result),
+                tool_call_id=tool_call["id"]  # must match the tool_call_id!
+            ))
+
+        # Second LLM call with correct sequence:
+        # system + history + assistant_response + tool_results
+        # ── NOT: system + updated_history (this breaks the sequence!) ──
+        final_response = llm.invoke(
+            [system] + history + [response] + tool_messages
+        )
         reply = final_response.content
+
     else:
         reply = response.content
 
-    # Save AI response to database
+    # Save AI reply to DB
     memory.add_ai_message(reply)
-    logger.info(f"Session {session_id} now has {memory.count()} messages in DB")
-
+    logger.info(f"Session {session_id}: {memory.count()} messages in DB")
     return reply
 
 # ── Tests ─────────────────────────────────────────────────────────────────
